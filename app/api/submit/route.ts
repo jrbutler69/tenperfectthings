@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/db';
+import { createClient } from '@supabase/supabase-js';
+const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
       const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
       const buffer = Buffer.from(await photoFile.arrayBuffer());
 
-      const { data: uploadData, error: uploadError } = await getSupabaseAdmin().storage
+      const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
         .from('profile-photos')
         .upload(fileName, buffer, {
           contentType: photoFile.type || 'image/jpeg',
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: `Photo upload failed: ${uploadError.message}` }, { status: 500 });
       }
 
-      const { data: { publicUrl } } = getSupabaseAdmin().storage
+      const { data: { publicUrl } } = supabaseAdmin.storage
         .from('profile-photos')
         .getPublicUrl(uploadData.path);
 

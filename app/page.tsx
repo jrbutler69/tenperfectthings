@@ -1,11 +1,12 @@
-import { getSupabaseAdmin } from '@/lib/db';
+import { createClient } from '@supabase/supabase-js';
+const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 import Link from 'next/link';
 import { Profile } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
 async function getProfiles(): Promise<Profile[]> {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await supabaseAdmin
     .from('profiles')
     .select('*')
     .eq('status', 'published')

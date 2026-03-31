@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/db';
+import { createClient } from '@supabase/supabase-js';
+const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 function checkAuth(request: NextRequest): boolean {
   const adminPassword = process.env.ADMIN_PASSWORD;
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await supabaseAdmin
     .from('profiles')
     .select('*')
     .order('created_at', { ascending: false });
@@ -34,7 +35,7 @@ export async function PATCH(request: NextRequest) {
   }
 
   if (action === 'delete') {
-    const { error } = await getSupabaseAdmin().from('profiles').delete().eq('id', id);
+    const { error } = await supabaseAdmin.from('profiles').delete().eq('id', id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ success: true });
   }
