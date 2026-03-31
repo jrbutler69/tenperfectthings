@@ -1,12 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
-const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-import { CLOTHING_CATEGORIES, TEN_QUESTIONS, Profile, CategoryKey, ClothingItem } from '@/types';
+import { CLOTHING_CATEGORIES, TEN_QUESTIONS, CategoryKey, ClothingItem } from '@/types';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-async function getProfile(slug: string): Promise<Profile | null> {
+async function getProfile(slug: string) {
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   const { data, error } = await supabaseAdmin
     .from('profiles')
     .select('*')
@@ -16,18 +19,6 @@ async function getProfile(slug: string): Promise<Profile | null> {
 
   if (error || !data) return null;
   return data;
-}
-
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const profile = await getProfile(params.slug);
-  if (!profile) return { title: 'Profile not found' };
-  return {
-    title: `${profile.name}'s Ten Perfect Things`,
-    description: profile.bio?.slice(0, 155),
-    openGraph: {
-      images: profile.photo_url ? [profile.photo_url] : [],
-    },
-  };
 }
 
 export default async function ProfilePage({ params }: { params: { slug: string } }) {
@@ -58,11 +49,8 @@ export default async function ProfilePage({ params }: { params: { slug: string }
       <div className="profile-hero">
         <div>
           {profile.photo_url ? (
-            <img
-              src={profile.photo_url}
-              alt={profile.name}
-              style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }}
-            />
+            <img src={profile.photo_url} alt={profile.name}
+              style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
           ) : (
             <div style={{ width: '100%', aspectRatio: '3/4', background: 'var(--pale)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ fontSize: '4rem', opacity: 0.2 }}>✦</span>
@@ -101,12 +89,8 @@ export default async function ProfilePage({ params }: { params: { slug: string }
                 if (!answer) return null;
                 return (
                   <div key={i}>
-                    <p style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.2rem' }}>
-                      {question}
-                    </p>
-                    <p style={{ fontSize: '0.95rem', color: 'var(--warm-gray)', lineHeight: 1.6 }}>
-                      {answer}
-                    </p>
+                    <p style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.2rem' }}>{question}</p>
+                    <p style={{ fontSize: '0.95rem', color: 'var(--warm-gray)', lineHeight: 1.6 }}>{answer}</p>
                   </div>
                 );
               })}
@@ -117,14 +101,11 @@ export default async function ProfilePage({ params }: { params: { slug: string }
 
       <section style={{ marginTop: '4rem' }}>
         <div style={{ borderBottom: '2px solid var(--ink)', marginBottom: '0', paddingBottom: '1rem' }}>
-          <h2 className="font-display" style={{ fontSize: '2rem', fontWeight: 700 }}>
-            Ten Perfect Things
-          </h2>
+          <h2 className="font-display" style={{ fontSize: '2rem', fontWeight: 700 }}>Ten Perfect Things</h2>
         </div>
 
         {CLOTHING_CATEGORIES.map((category, index) => {
           const pick = profile.clothing_picks?.[category.key as CategoryKey] as ClothingItem | undefined;
-
           return (
             <div key={category.key} className="clothing-item">
               <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
@@ -136,17 +117,13 @@ export default async function ProfilePage({ params }: { params: { slug: string }
                     {category.label}
                   </h3>
                 </div>
-
                 <div style={{ flex: 1 }}>
                   {pick && (pick.product_name || pick.quote) ? (
                     <>
                       {pick.image_url && (
                         <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', background: 'var(--pale)', padding: '1.5rem' }}>
-                          <img
-                            src={pick.image_url}
-                            alt={pick.product_name}
-                            style={{ width: '120px', height: '120px', objectFit: 'contain' }}
-                          />
+                          <img src={pick.image_url} alt={pick.product_name}
+                            style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
                           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <p style={{ fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--warm-gray)', marginBottom: '0.25rem' }}>
                               {pick.brand_name}
@@ -162,7 +139,6 @@ export default async function ProfilePage({ params }: { params: { slug: string }
                           </div>
                         </div>
                       )}
-
                       {!pick.image_url && pick.product_name && (
                         <div style={{ marginBottom: '0.75rem' }}>
                           <span style={{ fontSize: '0.75rem', color: 'var(--warm-gray)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
@@ -178,11 +154,8 @@ export default async function ProfilePage({ params }: { params: { slug: string }
                           )}
                         </div>
                       )}
-
                       {pick.quote && (
-                        <div className="pull-quote">
-                          "{pick.quote}"
-                        </div>
+                        <div className="pull-quote">"{pick.quote}"</div>
                       )}
                     </>
                   ) : (

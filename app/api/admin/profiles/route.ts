@@ -1,7 +1,7 @@
-export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
+export const dynamic = 'force-dynamic';
 
 function checkAuth(request: NextRequest): boolean {
   const adminPassword = process.env.ADMIN_PASSWORD;
@@ -13,6 +13,11 @@ export async function GET(request: NextRequest) {
   if (!checkAuth(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   const { data, error } = await supabaseAdmin
     .from('profiles')
@@ -27,6 +32,11 @@ export async function PATCH(request: NextRequest) {
   if (!checkAuth(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   const { id, action } = await request.json();
 
@@ -48,7 +58,7 @@ export async function PATCH(request: NextRequest) {
   const newStatus = statusMap[action];
   if (!newStatus) return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
 
-  const { error } = await getSupabaseAdmin()
+  const { error } = await supabaseAdmin
     .from('profiles')
     .update({ status: newStatus })
     .eq('id', id);

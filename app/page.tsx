@@ -1,11 +1,13 @@
-import { createClient } from '@supabase/supabase-js';
-const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 import Link from 'next/link';
-import { Profile } from '@/types';
+import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
-async function getProfiles(): Promise<Profile[]> {
+async function getProfiles() {
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   const { data, error } = await supabaseAdmin
     .from('profiles')
     .select('*')
@@ -48,7 +50,7 @@ export default async function HomePage() {
       ) : (
         <div style={{ padding: '4rem 0' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5px', background: 'var(--border)' }}>
-            {profiles.map((profile) => (
+            {profiles.map((profile: any) => (
               <ProfileCard key={profile.id} profile={profile} />
             ))}
           </div>
@@ -58,7 +60,7 @@ export default async function HomePage() {
   );
 }
 
-function ProfileCard({ profile }: { profile: Profile }) {
+function ProfileCard({ profile }: { profile: any }) {
   return (
     <Link href={`/profile/${profile.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <article className="profile-card" style={{ background: 'var(--cream)' }}>
