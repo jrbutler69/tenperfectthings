@@ -2,7 +2,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import Link from 'next/link';
 import { Profile } from '@/types';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 async function getProfiles(): Promise<Profile[]> {
   const { data, error } = await supabaseAdmin
