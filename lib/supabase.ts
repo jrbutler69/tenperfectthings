@@ -15,10 +15,3 @@ export const supabaseAdmin = createClient(
     },
   }
 );
-```
-
-Save, then:
-```
-git add lib/supabase.ts
-git commit -m "fix supabase client init"
-git push origin main
