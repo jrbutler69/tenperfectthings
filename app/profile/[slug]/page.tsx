@@ -3,7 +3,7 @@ import { CLOTHING_CATEGORIES, TEN_QUESTIONS, Profile, CategoryKey, ClothingItem 
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
-export const revalidate = 300;
+export const dynamic = 'force-dynamic';
 
 async function getProfile(slug: string): Promise<Profile | null> {
   const { data, error } = await supabaseAdmin
