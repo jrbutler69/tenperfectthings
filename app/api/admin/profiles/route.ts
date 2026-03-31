@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { data, error } = await getSupabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('profiles')
     .select('*')
     .order('created_at', { ascending: false });
@@ -34,7 +34,7 @@ export async function PATCH(request: NextRequest) {
   }
 
   if (action === 'delete') {
-    const { error } = await getSupabaseAdmin.from('profiles').delete().eq('id', id);
+    const { error } = await getSupabaseAdmin().from('profiles').delete().eq('id', id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ success: true });
   }
@@ -47,7 +47,7 @@ export async function PATCH(request: NextRequest) {
   const newStatus = statusMap[action];
   if (!newStatus) return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
 
-  const { error } = await getSupabaseAdmin
+  const { error } = await getSupabaseAdmin()
     .from('profiles')
     .update({ status: newStatus })
     .eq('id', id);

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
       const buffer = Buffer.from(await photoFile.arrayBuffer());
 
-      const { data: uploadData, error: uploadError } = await getSupabaseAdmin.storage
+      const { data: uploadData, error: uploadError } = await getSupabaseAdmin().storage
         .from('profile-photos')
         .upload(fileName, buffer, {
           contentType: photoFile.type || 'image/jpeg',
@@ -38,14 +38,14 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: `Photo upload failed: ${uploadError.message}` }, { status: 500 });
       }
 
-      const { data: { publicUrl } } = getSupabaseAdmin.storage
+      const { data: { publicUrl } } = getSupabaseAdmin().storage
         .from('profile-photos')
         .getPublicUrl(uploadData.path);
 
       photoUrl = publicUrl;
     }
 
-    const { data, error } = await getSupabaseAdmin
+    const { data, error } = await getSupabaseAdmin()
       .from('profiles')
       .insert({
         name,
