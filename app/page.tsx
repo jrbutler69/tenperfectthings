@@ -1,11 +1,11 @@
-import { supabaseAdmin } from '@/lib/db';
+import { getSupabaseAdmin } from '@/lib/db';
 import Link from 'next/link';
 import { Profile } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
 async function getProfiles(): Promise<Profile[]> {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin
     .from('profiles')
     .select('*')
     .eq('status', 'published')

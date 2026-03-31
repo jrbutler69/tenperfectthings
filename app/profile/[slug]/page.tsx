@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/db';
+import { getSupabaseAdmin } from '@/lib/db';
 import { CLOTHING_CATEGORIES, TEN_QUESTIONS, Profile, CategoryKey, ClothingItem } from '@/types';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -6,7 +6,7 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 async function getProfile(slug: string): Promise<Profile | null> {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin
     .from('profiles')
     .select('*')
     .eq('slug', slug)
