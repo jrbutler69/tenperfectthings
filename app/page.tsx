@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/db';
 import Link from 'next/link';
 import { Profile } from '@/types';
 

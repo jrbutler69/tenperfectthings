@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/db';
 import { CLOTHING_CATEGORIES, TEN_QUESTIONS, Profile, CategoryKey, ClothingItem } from '@/types';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
